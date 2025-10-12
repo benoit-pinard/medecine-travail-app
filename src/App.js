@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import FormulaireSalarie from './FormulaireSalarie';
+import SelectionRisques from './SelectionRisques';
 
 function App() {
   const [donneeSalarie, setDonneeSalarie] = useState(null);
@@ -8,6 +9,10 @@ function App() {
   const handleValidation = (donnees) => {
     setDonneeSalarie(donnees);
     console.log('Données saisies :', donnees);
+  };
+
+  const handleRisquesValidation = (risques) => {
+    console.log('Risques sélectionnés :', risques);
   };
 
   return (
@@ -19,6 +24,7 @@ function App() {
 
       <main className="App-main">
         <FormulaireSalarie onValidation={handleValidation} />
+        <SelectionRisques onValidation={handleRisquesValidation} />
 
         {donneeSalarie && (
           <div className="resultat-container">
