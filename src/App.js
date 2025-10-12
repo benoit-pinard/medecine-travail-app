@@ -1,23 +1,34 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import FormulaireSalarie from './FormulaireSalarie';
 
 function App() {
+  const [donneeSalarie, setDonneeSalarie] = useState(null);
+
+  const handleValidation = (donnees) => {
+    setDonneeSalarie(donnees);
+    console.log('Données saisies :', donnees);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Application d'aide à la décision médicale</h1>
+        <p>Bienvenue ! Cette application aide les médecins du travail à proposer un parcours de suivi adapté.</p>
       </header>
+
+      <main className="App-main">
+        <FormulaireSalarie onValidation={handleValidation} />
+
+        {donneeSalarie && (
+          <div className="resultat-container">
+            <h3>Données enregistrées :</h3>
+            <p><strong>Âge :</strong> {donneeSalarie.age}</p>
+            <p><strong>Sexe :</strong> {donneeSalarie.sexe}</p>
+            <p><strong>Poste :</strong> {donneeSalarie.poste}</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
