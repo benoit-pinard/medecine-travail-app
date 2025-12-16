@@ -5,17 +5,15 @@ function FormulaireSalarie({ onValidation }) {
   // State (état) : les données du formulaire
   const [age, setAge] = useState('');
   const [sexe, setSexe] = useState('');
-  const [poste, setPoste] = useState('');
 
   // Fonction pour gérer la validation du formulaire
   const handleValidation = () => {
-    if (age && sexe && poste) {
+    if (age && sexe) {
       // Appelle la fonction parent avec les données
-      onValidation({ age, sexe, poste });
+      onValidation({ age, sexe });
       // Réinitialise le formulaire
       setAge('');
       setSexe('');
-      setPoste('');
       alert('Données enregistrées avec succès !');
     } else {
       alert('Veuillez remplir tous les champs');
@@ -51,17 +49,6 @@ function FormulaireSalarie({ onValidation }) {
             <option value="Femme">Femme</option>
             <option value="Autre">Autre</option>
           </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="poste">Poste :</label>
-          <input
-            type="text"
-            id="poste"
-            value={poste}
-            onChange={(e) => setPoste(e.target.value)}
-            placeholder="Entrez le poste"
-          />
         </div>
 
         <button type="button" onClick={handleValidation}>

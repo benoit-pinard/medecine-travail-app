@@ -1,40 +1,45 @@
-import { useState } from 'react';
+// src/App.js
+import React, { useState } from 'react';
 import './App.css';
 import FormulaireSalarie from './FormulaireSalarie';
-import SelectionRisques from './SelectionRisques';
+import JobSelector from './JobSelector';
+import RiskDisplay from './RiskDisplay';
 
 function App() {
-  const [donneeSalarie, setDonneeSalarie] = useState(null);
+  const [selectedJobIds, setSelectedJobIds] = useState([]);
 
-  const handleValidation = (donnees) => {
-    setDonneeSalarie(donnees);
-    console.log('Données saisies :', donnees);
-  };
-
-  const handleRisquesValidation = (risques) => {
-    console.log('Risques sélectionnés :', risques);
+  // Callback quand les métiers sont sélectionnés
+  const handleJobsChange = (jobIds) => {
+    setSelectedJobIds(jobIds);
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Application d'aide à la décision médicale</h1>
-        <p>Bienvenue ! Cette application aide les médecins du travail à proposer un parcours de suivi adapté.</p>
+        <h1>Médecine du Travail - Aide à la décision</h1>
+        <p className="App-subtitle">Identification des risques professionnels</p>
       </header>
 
       <main className="App-main">
-        <FormulaireSalarie onValidation={handleValidation} />
-        <SelectionRisques onValidation={handleRisquesValidation} />
+        {/* Étape 1 : Formulaire salarié (existant) */}
+        <section className="app-section">
+          <FormulaireSalarie />
+        </section>
 
-        {donneeSalarie && (
-          <div className="resultat-container">
-            <h3>Données enregistrées :</h3>
-            <p><strong>Âge :</strong> {donneeSalarie.age}</p>
-            <p><strong>Sexe :</strong> {donneeSalarie.sexe}</p>
-            <p><strong>Poste :</strong> {donneeSalarie.poste}</p>
-          </div>
-        )}
+        {/* Étape 2 : Sélection des métiers */}
+        <section className="app-section">
+          <JobSelector onJobsChange={handleJobsChange} />
+        </section>
+
+        {/* Étape 3 : Affichage des risques */}
+        <section className="app-section">
+          <RiskDisplay selectedJobIds={selectedJobIds} />
+        </section>
       </main>
+
+      <footer className="App-footer">
+        <p>© 2024 - Application de médecine du travail - Sprint 2</p>
+      </footer>
     </div>
   );
 }
