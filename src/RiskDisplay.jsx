@@ -1,12 +1,16 @@
 // src/RiskDisplay.jsx
 import React, { useState, useEffect } from 'react';
-import risks from './data/risksData';
+import risks from './data/risksData'; // TODO Sprint 3: remplacer par fetch API
 import './RiskDisplay.css';
 
 function RiskDisplay({ selectedJobIds }) {
   const [filteredRisks, setFilteredRisks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({});
+  
+  // TODO Sprint 3: Ajouter états pour le chargement et les erreurs
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
 
   // Filtrer les risques en fonction des métiers sélectionnés
   useEffect(() => {
@@ -15,7 +19,44 @@ function RiskDisplay({ selectedJobIds }) {
       return;
     }
 
-    // Trouver tous les risques correspondant aux métiers sélectionnés
+    // TODO Sprint 3: Remplacer par un appel API
+    // Structure future de l'appel API:
+    /*
+    async function fetchRisks() {
+      setLoading(true);
+      setError(null);
+      try {
+        // Appel API avec les métiers sélectionnés en paramètres
+        const jobsParam = selectedJobIds.join(',');
+        const response = await fetch(`http://localhost:5000/api/risks?jobs=${jobsParam}`);
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des risques');
+        }
+        
+        const data = await response.json();
+        setFilteredRisks(data);
+        
+        // Initialiser les catégories dépliées
+        const categories = [...new Set(data.map(r => r.category))];
+        const initialExpanded = {};
+        categories.forEach(cat => {
+          initialExpanded[cat] = true;
+        });
+        setExpandedCategories(initialExpanded);
+        
+      } catch (err) {
+        setError(err.message);
+        setFilteredRisks([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchRisks();
+    */
+
+    // VERSION ACTUELLE (Sprint 2): Filtrage local des données
     const matchingRisks = risks.filter(risk => 
       risk.jobIds.some(jobId => selectedJobIds.includes(jobId))
     );
@@ -53,6 +94,29 @@ function RiskDisplay({ selectedJobIds }) {
       [category]: !prev[category]
     }));
   };
+
+  // TODO Sprint 3: Gérer l'état de chargement
+  // if (loading) {
+  //   return (
+  //     <div className="risk-display">
+  //       <div className="loading-state">
+  //         <p>Chargement des risques...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  // TODO Sprint 3: Gérer les erreurs
+  // if (error) {
+  //   return (
+  //     <div className="risk-display">
+  //       <div className="error-state">
+  //         <p>Erreur: {error}</p>
+  //         <button onClick={() => window.location.reload()}>Réessayer</button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   // Si aucun métier sélectionné
   if (!selectedJobIds || selectedJobIds.length === 0) {

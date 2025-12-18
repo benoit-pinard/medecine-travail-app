@@ -1,11 +1,32 @@
 // src/JobSelector.jsx
 import React, { useState } from 'react';
-import jobs from './data/jobsData';
+import jobs from './data/jobsData'; // TODO Sprint 3: remplacer par fetch API
 import './JobSelector.css';
 
 function JobSelector({ onJobsChange }) {
   const [currentJob, setCurrentJob] = useState('');
   const [previousJobs, setPreviousJobs] = useState([]);
+  
+  // TODO Sprint 3: Ajouter état de chargement et erreurs
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+
+  // TODO Sprint 3: Charger les métiers depuis l'API
+  // useEffect(() => {
+  //   async function fetchJobs() {
+  //     setLoading(true);
+  //     try {
+  //       const response = await fetch('http://localhost:5000/api/jobs');
+  //       const data = await response.json();
+  //       setJobs(data); // Remplacer l'import par un état
+  //     } catch (err) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchJobs();
+  // }, []);
 
   // Gérer la sélection du métier actuel
   const handleCurrentJobChange = (e) => {
@@ -52,6 +73,10 @@ function JobSelector({ onJobsChange }) {
       onJobsChange(allSelectedJobs);
     }
   };
+
+  // TODO Sprint 3: Gérer l'état de chargement
+  // if (loading) return <div className="job-selector"><p>Chargement des métiers...</p></div>;
+  // if (error) return <div className="job-selector"><p>Erreur: {error}</p></div>;
 
   return (
     <div className="job-selector">
