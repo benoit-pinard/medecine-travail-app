@@ -1,5 +1,6 @@
 // src/App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactGA from 'react-ga4';
 import './App.css';
 import FormulaireSalarie from './FormulaireSalarie';
 import JobSelector from './JobSelector';
@@ -12,6 +13,7 @@ import RiskDisplay from './RiskDisplay';
  * - Les données sont stockées localement dans src/data/
  * - Pas de communication avec un backend
  * - État géré avec useState au niveau de ce composant
+ * - Google Analytics intégré pour tracking des utilisateurs (P8)
  * 
  * TODO Sprint 3: Architecture avec API
  * - Créer un serveur Node.js/Express (backend)
@@ -26,12 +28,29 @@ function App() {
   // État partagé: IDs des métiers sélectionnés
   const [selectedJobIds, setSelectedJobIds] = useState([]);
 
+  // Initialisation de Google Analytics
+  useEffect(() => {
+    // Initialiser GA4 avec ton ID de mesure
+    ReactGA.initialize('G-J37F7CYWE5');
+    
+    // Enregistrer la visite de la page d'accueil
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+  }, []);
+
   // TODO Sprint 3: Ajouter état pour les données du salarié
   // const [employeeData, setEmployeeData] = useState(null);
 
   // Callback quand les métiers sont sélectionnés
   const handleJobsChange = (jobIds) => {
     setSelectedJobIds(jobIds);
+    
+    // Tracker l'événement de sélection de métiers dans GA
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'Selected Jobs',
+      label: `${jobIds.length} job(s) selected`,
+      value: jobIds.length
+    });
   };
 
   // TODO Sprint 3: Callback pour sauvegarder les données du salarié
