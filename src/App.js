@@ -118,7 +118,7 @@ function App() {
       </main>
 
       <footer className="App-footer">
-        <p>© 2024 - Application de médecine du travail - Version P8</p>
+        <p>© 2025 - Application de médecine du travail - Version P8</p>
       </footer>
     </div>
   );
