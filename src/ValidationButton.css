@@ -1,0 +1,131 @@
+/* src/ValidationButton.css */
+
+.validation-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 12px;
+  border: 2px solid #86efac;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.validation-summary {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.validation-icon {
+  width: 48px;
+  height: 48px;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.validation-text h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #166534;
+  margin: 0 0 10px 0;
+}
+
+.validation-text p {
+  font-size: 16px;
+  color: #15803d;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.validation-text p strong {
+  font-weight: 700;
+  color: #166534;
+}
+
+.validation-hint {
+  font-size: 14px !important;
+  color: #4d7c0f !important;
+  font-style: italic;
+  margin-top: 12px !important;
+}
+
+.validation-button {
+  width: 100%;
+  padding: 18px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.validation-button:hover {
+  background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
+  box-shadow: 0 6px 12px rgba(22, 163, 74, 0.4);
+  transform: translateY(-2px);
+}
+
+.validation-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.3);
+}
+
+.button-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Animation d'apparition */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.validation-container {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .validation-container {
+    padding: 20px;
+  }
+
+  .validation-summary {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .validation-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .validation-text h3 {
+    font-size: 20px;
+  }
+
+  .validation-text p {
+    font-size: 15px;
+  }
+
+  .validation-button {
+    font-size: 16px;
+    padding: 16px 24px;
+  }
+}

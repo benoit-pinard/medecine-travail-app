@@ -6,19 +6,8 @@ function FormulaireSalarie({ onValidation }) {
   const [age, setAge] = useState('');
   const [sexe, setSexe] = useState('');
 
-  // Fonction pour gérer la validation du formulaire
-  const handleValidation = () => {
-    if (age && sexe) {
-      // Appelle la fonction parent avec les données
-      onValidation({ age, sexe });
-      // Réinitialise le formulaire
-      setAge('');
-      setSexe('');
-      alert('Données enregistrées avec succès !');
-    } else {
-      alert('Veuillez remplir tous les champs');
-    }
-  };
+  // Note : Le bouton de validation a été déplacé en bas de page
+  // après l'affichage des risques (suite à la sprint review)
 
   return (
     <div className="formulaire-container">
@@ -50,10 +39,6 @@ function FormulaireSalarie({ onValidation }) {
             <option value="Autre">Autre</option>
           </select>
         </div>
-
-        <button type="button" onClick={handleValidation}>
-          Valider
-        </button>
       </form>
     </div>
   );

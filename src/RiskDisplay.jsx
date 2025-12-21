@@ -1,67 +1,40 @@
 // src/RiskDisplay.jsx
 import React, { useState, useEffect } from 'react';
-import risks from './data/risksData'; // TODO Sprint 3: remplacer par fetch API
+import risks from './data/risksData';
 import './RiskDisplay.css';
 
-function RiskDisplay({ selectedJobIds }) {
+function RiskDisplay({ selectedJobIds, onRisksChange }) {
   const [filteredRisks, setFilteredRisks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({});
-  
-  // TODO Sprint 3: Ajouter états pour le chargement et les erreurs
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
+  const [checkedRisks, setCheckedRisks] = useState({});
 
   // Filtrer les risques en fonction des métiers sélectionnés
   useEffect(() => {
     if (!selectedJobIds || selectedJobIds.length === 0) {
       setFilteredRisks([]);
+      setCheckedRisks({});
+      if (onRisksChange) onRisksChange([]);
       return;
     }
 
-    // TODO Sprint 3: Remplacer par un appel API
-    // Structure future de l'appel API:
-    /*
-    async function fetchRisks() {
-      setLoading(true);
-      setError(null);
-      try {
-        // Appel API avec les métiers sélectionnés en paramètres
-        const jobsParam = selectedJobIds.join(',');
-        const response = await fetch(`http://localhost:5000/api/risks?jobs=${jobsParam}`);
-        
-        if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des risques');
-        }
-        
-        const data = await response.json();
-        setFilteredRisks(data);
-        
-        // Initialiser les catégories dépliées
-        const categories = [...new Set(data.map(r => r.category))];
-        const initialExpanded = {};
-        categories.forEach(cat => {
-          initialExpanded[cat] = true;
-        });
-        setExpandedCategories(initialExpanded);
-        
-      } catch (err) {
-        setError(err.message);
-        setFilteredRisks([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchRisks();
-    */
-
-    // VERSION ACTUELLE (Sprint 2): Filtrage local des données
     const matchingRisks = risks.filter(risk => 
       risk.jobIds.some(jobId => selectedJobIds.includes(jobId))
     );
 
     setFilteredRisks(matchingRisks);
+
+    // Par défaut, tous les risques sont cochés
+    const initialChecked = {};
+    matchingRisks.forEach(risk => {
+      initialChecked[risk.id] = true;
+    });
+    setCheckedRisks(initialChecked);
+
+    // Notifier le parent avec tous les IDs cochés par défaut
+    if (onRisksChange) {
+      onRisksChange(matchingRisks.map(r => r.id));
+    }
 
     // Par défaut, toutes les catégories sont dépliées
     const categories = [...new Set(matchingRisks.map(r => r.category))];
@@ -72,12 +45,30 @@ function RiskDisplay({ selectedJobIds }) {
     setExpandedCategories(initialExpanded);
   }, [selectedJobIds]);
 
+  // Gérer le cochage/décochage d'un risque
+  const handleRiskToggle = (riskId) => {
+    const newCheckedRisks = {
+      ...checkedRisks,
+      [riskId]: !checkedRisks[riskId]
+    };
+    setCheckedRisks(newCheckedRisks);
+
+    // Notifier le parent avec la liste des IDs cochés
+    const checkedIds = Object.keys(newCheckedRisks)
+      .filter(id => newCheckedRisks[id])
+      .map(id => parseInt(id));
+    
+    if (onRisksChange) {
+      onRisksChange(checkedIds);
+    }
+  };
+
   // Filtrer par recherche
   const displayedRisks = filteredRisks.filter(risk =>
     risk.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Grouper par catégorie (utilise directement risk.category)
+  // Grouper par catégorie
   const risksByCategory = {};
   displayedRisks.forEach(risk => {
     const category = risk.category || 'Non classé';
@@ -95,29 +86,6 @@ function RiskDisplay({ selectedJobIds }) {
     }));
   };
 
-  // TODO Sprint 3: Gérer l'état de chargement
-  // if (loading) {
-  //   return (
-  //     <div className="risk-display">
-  //       <div className="loading-state">
-  //         <p>Chargement des risques...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // TODO Sprint 3: Gérer les erreurs
-  // if (error) {
-  //   return (
-  //     <div className="risk-display">
-  //       <div className="error-state">
-  //         <p>Erreur: {error}</p>
-  //         <button onClick={() => window.location.reload()}>Réessayer</button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   // Si aucun métier sélectionné
   if (!selectedJobIds || selectedJobIds.length === 0) {
     return (
@@ -133,14 +101,20 @@ function RiskDisplay({ selectedJobIds }) {
     );
   }
 
+  const checkedCount = Object.values(checkedRisks).filter(Boolean).length;
+
   return (
     <div className="risk-display">
       <div className="risk-header">
         <h2>Risques professionnels identifiés</h2>
         <div className="risk-count">
-          <span className="count-badge">{displayedRisks.length}</span>
-          <span className="count-text">risque{displayedRisks.length > 1 ? 's' : ''} détecté{displayedRisks.length > 1 ? 's' : ''}</span>
+          <span className="count-badge">{checkedCount}</span>
+          <span className="count-text">risque{checkedCount > 1 ? 's' : ''} sélectionné{checkedCount > 1 ? 's' : ''}</span>
         </div>
+      </div>
+
+      <div className="risk-instruction">
+        <p>💡 <strong>Décochez</strong> les risques que vous souhaitez écarter de l'analyse</p>
       </div>
 
       {/* Barre de recherche */}
@@ -174,7 +148,7 @@ function RiskDisplay({ selectedJobIds }) {
           </div>
         ) : (
           Object.entries(risksByCategory)
-            .sort((a, b) => a[0].localeCompare(b[0])) // Tri alphabétique des catégories
+            .sort((a, b) => a[0].localeCompare(b[0]))
             .map(([category, categoryRisks]) => (
             <div key={category} className="risk-category">
               <div 
@@ -198,9 +172,19 @@ function RiskDisplay({ selectedJobIds }) {
               {expandedCategories[category] && (
                 <ul className="risk-list">
                   {categoryRisks.map(risk => (
-                    <li key={risk.id} className="risk-item">
+                    <li key={risk.id} className={`risk-item ${checkedRisks[risk.id] ? 'checked' : 'unchecked'}`}>
                       <div className="risk-content">
-                        <span className="risk-label">{risk.label}</span>
+                        <label className="risk-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={checkedRisks[risk.id] || false}
+                            onChange={() => handleRiskToggle(risk.id)}
+                            className="risk-checkbox"
+                          />
+                          <span className={`risk-label ${!checkedRisks[risk.id] ? 'strikethrough' : ''}`}>
+                            {risk.label}
+                          </span>
+                        </label>
                         <span className="risk-jobs-count">
                           {risk.jobIds.filter(id => selectedJobIds.includes(id)).length} métier{risk.jobIds.filter(id => selectedJobIds.includes(id)).length > 1 ? 's' : ''}
                         </span>
